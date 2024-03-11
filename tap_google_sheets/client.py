@@ -24,6 +24,7 @@ class GoogleSheetsStream(Stream):
         spread = Spread(self.config["sheet_id"], client=client)
         self.sheet = spread.sheet_to_df()
         self.name = self.config["sheet_name"]
+        self.primary_keys = self.config["primary_keys"]
         super().__init__(tap, schema, name)
 
     @property

@@ -18,6 +18,7 @@ plugins:
     config:
       sheet_name: employees
       sheet_id: 1vWbTD0TKoqNs7s5o01vnaiyF4HF8QxjWx4YgvnvaUZQ
+      primary_keys: [agent_user_id]
       project_id: $TAP_GOOGLE_SHEETS_PROJECT_ID
       private_key_id: $TAP_GOOGLE_SHEETS_PRIVATE_KEY_ID
       private_key: $TAP_GOOGLE_SHEETS_PRIVATE_KEY

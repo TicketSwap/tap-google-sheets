@@ -65,6 +65,12 @@ class TapGoogleSheets(Tap):
             required=True,
             description="Google Sheet name (will be the stream name)",
         ),
+        th.Property(
+            "primary_keys",
+            th.ArrayType(th.StringType()),
+            required=True,
+            description="Google Sheet primary keys",
+        ),
     ).to_dict()
 
     def discover_streams(self) -> list[client.GoogleSheetsStream]:
