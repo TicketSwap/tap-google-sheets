@@ -1,0 +1,31 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: "tap-google-sheets"
+default_environment: test
+environments:
+- name: test
+plugins:
+  extractors:
+  - name: "tap-google-sheets"
+    namespace: "tap_google_sheets"
+    pip_url: -e .
+    capabilities:
+    - state
+    - catalog
+    - discover
+    - about
+    - stream-maps
+    config:
+      sheet_name: employees
+      sheet_id: 1vWbTD0TKoqNs7s5o01vnaiyF4HF8QxjWx4YgvnvaUZQ
+      project_id: $TAP_GOOGLE_SHEETS_PROJECT_ID
+      private_key_id: $TAP_GOOGLE_SHEETS_PRIVATE_KEY_ID
+      private_key: $TAP_GOOGLE_SHEETS_PRIVATE_KEY
+      client_email: $TAP_GOOGLE_SHEETS_CLIENT_EMAIL
+      client_id: $TAP_GOOGLE_SHEETS_CLIENT_ID
+      client_x509_cert_url: $TAP_GOOGLE_SHEETS_CLIENT_X509_CERT_URL
+  
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
