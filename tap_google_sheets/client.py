@@ -33,7 +33,6 @@ class GoogleSheetsStream(Stream):
             "type": "object",
             "properties": {column: {"type": ["string", "null"]} for column in self.sheet.columns},
         }
-        self.logger.info(schema)
         return schema
 
     def create_google_sheets_client(self):
