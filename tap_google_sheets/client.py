@@ -2,12 +2,23 @@
 
 from __future__ import annotations
 from os import PathLike
+import logging
+import typing as t
+import json
 
 from typing import Iterable, Any
+import singer_sdk._singerlib as singer
 from pathlib import Path
 from singer_sdk import Tap
 from singer_sdk._singerlib.schema import Schema
 from singer_sdk import typing as th  # JSON Schema typing helpers
+from singer_sdk.mapper import StreamMap
+
+if t.TYPE_CHECKING:
+    import logging
+
+    from singer_sdk.helpers._compat import Traversable
+    from singer_sdk.tap_base import Tap
 
 from singer_sdk.streams import Stream
 from gspread_pandas import Spread, Client
@@ -20,12 +31,53 @@ class GoogleSheetsStream(Stream):
         self, tap: Tap, schema: str | PathLike | dict[str, Any] | Schema | None = None, name: str | None = None
     ) -> None:
         self._config: dict = dict(tap.config)
+        self.name = self.config["sheet_name"]
         client = self.create_google_sheets_client()
         spread = Spread(self.config["sheet_id"], client=client)
         self.sheet = spread.sheet_to_df()
-        self.name = self.config["sheet_name"]
-        self.primary_keys = self.config["primary_keys"]
-        super().__init__(tap, schema, name)
+        self._primary_keys = self.config["primary_keys"]
+        self.logger: logging.Logger = tap.logger.getChild(self.name)
+        self.metrics_logger = tap.metrics_logger
+        self.tap_name: str = tap.name
+        self._tap = tap
+        self._tap_state = tap.state
+        self._tap_input_catalog: singer.Catalog | None = None
+        self._stream_maps: list[StreamMap] | None = None
+        self.forced_replication_method: str | None = None
+        self._replication_key: str | None = None
+        self._state_partitioning_keys: list[str] | None = None
+        self._schema_filepath: Path | Traversable | None = None
+        self._metadata: singer.MetadataMapping | None = None
+        self._mask: singer.SelectionMask | None = None
+        self._schema: dict
+        self._is_state_flushed: bool = True
+        self._last_emitted_state: dict | None = None
+        self._sync_costs: dict[str, int] = {}
+        self.child_streams: list[Stream] = []
+        if schema:
+            if isinstance(schema, (PathLike, str)):
+                if not Path(schema).is_file():
+                    msg = f"Could not find schema file '{self.schema_filepath}'."
+                    raise FileNotFoundError(msg)
+
+                self._schema_filepath = Path(schema)
+            elif isinstance(schema, dict):
+                self._schema = schema
+            elif isinstance(schema, singer.Schema):
+                self._schema = schema.to_dict()
+            else:
+                msg = f"Unexpected type {type(schema).__name__} for arg 'schema'."
+                raise ValueError(msg)
+
+        if self.schema_filepath:
+            self._schema = json.loads(self.schema_filepath.read_text())
+
+        if not self.schema:
+            msg = (
+                f"Could not initialize schema for stream '{self.name}'. A valid schema "
+                "object or filepath was not provided."
+            )
+            raise ValueError(msg)
 
     @property
     def schema(self):
