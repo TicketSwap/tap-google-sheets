@@ -24,7 +24,7 @@ class GoogleSheetsStream(Stream):
         spread = Spread(self.config["sheet_id"], client=client)
         self.sheet = spread.sheet_to_df()
         self.name = self.config["sheet_name"]
-        self._primary_keys = self.config["primary_keys"]
+        self.primary_keys = self.config["primary_keys"]
         super().__init__(tap, schema, name)
 
     @property
@@ -32,7 +32,6 @@ class GoogleSheetsStream(Stream):
         schema = {
             "type": "object",
             "properties": {column: {"type": ["string", "null"]} for column in self.sheet.columns},
-            "key_properties": [property for property in self.config["primary_keys"]],
         }
         self.logger.info(schema)
         return schema
