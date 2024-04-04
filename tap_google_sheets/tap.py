@@ -1,6 +1,7 @@
 """GoogleSheets tap class."""
 
 from __future__ import annotations
+import os
 
 from singer_sdk import Tap
 from singer_sdk import typing as th  # JSON schema typing helpers
@@ -20,7 +21,7 @@ class TapGoogleSheets(Tap):
             th.StringType,
             required=True,
             description="Google API service account",
-            default="$TAP_GOOGLE_SHEETS_PROJECT_ID",
+            default=os.getenv("$TAP_GOOGLE_SHEETS_PROJECT_ID"),
         ),
         th.Property(
             "private_key_id",
@@ -28,7 +29,7 @@ class TapGoogleSheets(Tap):
             required=True,
             secret=True,
             description="Google API service account private key id",
-            default="$TAP_GOOGLE_SHEETS_PRIVATE_KEY_ID",
+            default=os.getenv("$TAP_GOOGLE_SHEETS_PRIVATE_KEY_ID"),
         ),
         th.Property(
             "private_key",
@@ -36,28 +37,28 @@ class TapGoogleSheets(Tap):
             required=True,
             secret=True,
             description="Google API service account private key",
-            default="$TAP_GOOGLE_SHEETS_PRIVATE_KEY",
+            default=os.getenv("$TAP_GOOGLE_SHEETS_PRIVATE_KEY"),
         ),
         th.Property(
             "client_email",
             th.StringType,
             required=True,
             description="Google API service account client email",
-            default="$TAP_GOOGLE_SHEETS_CLIENT_EMAIL",
+            default=os.getenv("$TAP_GOOGLE_SHEETS_CLIENT_EMAIL"),
         ),
         th.Property(
             "client_id",
             th.StringType,
             required=True,
             description="Google API service account client id",
-            default="$TAP_GOOGLE_SHEETS_CLIENT_ID",
+            default=os.getenv("$TAP_GOOGLE_SHEETS_CLIENT_ID"),
         ),
         th.Property(
             "client_x509_cert_url",
             th.StringType,
             required=True,
             description="Google API service account client x509 cert url",
-            default="$TAP_GOOGLE_SHEETS_CLIENT_X509_CERT_URL",
+            default=os.getenv("$TAP_GOOGLE_SHEETS_CLIENT_X509_CERT_URL"),
         ),
         th.Property(
             "sheet_id",
