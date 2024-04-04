@@ -33,7 +33,7 @@ class GoogleSheetsStream(Stream):
         self._config: dict = dict(tap.config)
         self.name = self.config["sheet_name"]
         client = self.create_google_sheets_client()
-        spread = Spread(self.config["sheet_id"], client=client)
+        spread = Spread(self.config["sheet_id"], self.name, client=client)
         self.sheet = spread.sheet_to_df(index=0)
         self._primary_keys = self.config["primary_keys"]
         self.logger: logging.Logger = tap.logger.getChild(self.name)
