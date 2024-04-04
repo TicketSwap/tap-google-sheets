@@ -19,14 +19,12 @@ class TapGoogleSheets(Tap):
         th.Property(
             "project_id",
             th.StringType,
-            required=True,
             description="Google API service account",
             default=os.getenv("$TAP_GOOGLE_SHEETS_PROJECT_ID"),
         ),
         th.Property(
             "private_key_id",
             th.StringType,
-            required=True,
             secret=True,
             description="Google API service account private key id",
             default=os.getenv("$TAP_GOOGLE_SHEETS_PRIVATE_KEY_ID"),
@@ -34,7 +32,6 @@ class TapGoogleSheets(Tap):
         th.Property(
             "private_key",
             th.StringType,
-            required=True,
             secret=True,
             description="Google API service account private key",
             default=os.getenv("$TAP_GOOGLE_SHEETS_PRIVATE_KEY"),
@@ -42,21 +39,18 @@ class TapGoogleSheets(Tap):
         th.Property(
             "client_email",
             th.StringType,
-            required=True,
             description="Google API service account client email",
             default=os.getenv("$TAP_GOOGLE_SHEETS_CLIENT_EMAIL"),
         ),
         th.Property(
             "client_id",
             th.StringType,
-            required=True,
             description="Google API service account client id",
             default=os.getenv("$TAP_GOOGLE_SHEETS_CLIENT_ID"),
         ),
         th.Property(
             "client_x509_cert_url",
             th.StringType,
-            required=True,
             description="Google API service account client x509 cert url",
             default=os.getenv("$TAP_GOOGLE_SHEETS_CLIENT_X509_CERT_URL"),
         ),
